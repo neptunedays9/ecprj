@@ -12,6 +12,10 @@ import { DataService } from '../data/data.service';
 export class SortService {
     constructor(private readonly dataService: DataService) { }
 
+    /**
+     * sorts the products based on the option provided
+     * @param sortOption 
+     */
     getProducts(sortOption: SortOptions): Observable<Product[]> {
         let sortedProducts = [];
 
@@ -57,25 +61,28 @@ export class SortService {
             }));
     }
 
-
-
+    /**
+     * sorts the products based on the shopper history
+     * @param allProducts 
+     */
     private getRecommendedProducts(allProducts: Product[]): Observable<Product[]> {
 
         return this.dataService.getShopperHistory().pipe(
             map(history => {
 
                 //initialise popularity array from the products array 
-                let popularityArray: ProductPopularity[] = 
-                allProducts.map(prod => {
-                    return {
-                        ...prod,
-                        customers: []
-                }});
-        
+                let popularityArray: ProductPopularity[] =
+                    allProducts.map(prod => {
+                        return {
+                            ...prod,
+                            customers: []
+                        }
+                    });
+
                 //populate the unique customerIds in the popularityArray
-                popularityArray.map(pElem => {                    
-                    history.map(hElem => { 
-                        if(hElem.products.findIndex(i => i.name === pElem.name) !== -1) {
+                popularityArray.map(pElem => {
+                    history.map(hElem => {
+                        if (hElem.products.findIndex(i => i.name === pElem.name) !== -1) {
                             if (pElem.customers.findIndex(i => i === hElem.customerId) === -1) {
                                 Array.prototype.push.apply(pElem.customers, [hElem.customerId]);
                             }
