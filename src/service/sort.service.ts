@@ -17,35 +17,30 @@ export class SortService {
      * @param sortOption 
      */
     getProducts(sortOption: SortOptions): Observable<Product[]> {
-        let sortedProducts = [];
 
         return this.dataService.getAllProducts().pipe(
             mergeMap(allProducts => {
 
                 switch (sortOption) {
                     case SortOptions.PRICE_LOW_TO_HIGH:
-                        sortedProducts = allProducts.sort((a, b) => a.price - b.price);
-                        return of(sortedProducts);
+                        return of(allProducts.sort((a, b) => a.price - b.price));
 
                     case SortOptions.PRICE_HIGH_TO_LOW:
-                        sortedProducts = allProducts.sort((a, b) => b.price - a.price);
-                        return of(sortedProducts);
+                        return of(allProducts.sort((a, b) => b.price - a.price));
 
                     case SortOptions.NAME_ASCENDING:
-                        sortedProducts = allProducts.sort((a, b) => {
+                        return of(allProducts.sort((a, b) => {
                             if (a.name < b.name) { return -1; }
                             if (a.name > b.name) { return 1; }
                             return 0;
-                        });
-                        return of(sortedProducts);
+                        }));
 
                     case SortOptions.NAME_DESCENDING:
-                        sortedProducts = allProducts.sort((a, b) => {
+                        return of(allProducts.sort((a, b) => {
                             if (b.name < a.name) { return -1; }
                             if (b.name > a.name) { return 1; }
                             return 0;
-                        });
-                        return of(sortedProducts);
+                        }));
 
                     case SortOptions.RECOMMENDED:
                         return this.getRecommendedProducts(
