@@ -84,7 +84,7 @@ export class SortService {
                     history.map(hElem => {
                         if (hElem.products.findIndex(i => i.name === pElem.name) !== -1) {
                             if (pElem.customers.findIndex(i => i === hElem.customerId) === -1) {
-                                Array.prototype.push.apply(pElem.customers, [hElem.customerId]);
+                                pElem.customers.push(hElem.customerId);
                             }
                         }
                     })
