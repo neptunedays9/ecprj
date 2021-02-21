@@ -23,7 +23,7 @@ export class DataService {
             .pipe(
                 map(response => response.data),
                 catchError(err => {
-                    throw new AppError(ErrorType.AppError_ApiResource, HttpStatus.SERVICE_UNAVAILABLE);
+                    throw new AppError(ErrorType.AppError_ApiResource);
                 })
             );
     }
@@ -34,7 +34,7 @@ export class DataService {
             .pipe(
                 map(response => response.data),
                 catchError(err => {
-                    throw new AppError(ErrorType.AppError_ApiResource, HttpStatus.SERVICE_UNAVAILABLE);
+                    throw new AppError(ErrorType.AppError_ApiResource);
                 })
             );
     }
@@ -46,7 +46,7 @@ export class DataService {
             .pipe(
                 map(response => response.data),
                 catchError(err => {
-                    throw new AppError(ErrorType.AppError_ApiResource, HttpStatus.SERVICE_UNAVAILABLE);
+                    throw new AppError(ErrorType.AppError_ApiResource);
                 })
             );
     }

@@ -1,5 +1,7 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query } from '@nestjs/common';
 import { Observable } from 'rxjs';
+import { AppError } from 'src/error/app-error';
+import { ErrorType } from 'src/error/error-types';
 import { SortService } from '../service/sort.service';
 import { TrolleyService } from '../service/trolley.service';
 import { UserService } from '../service/user.service';
@@ -16,7 +18,7 @@ export class AppController {
     private readonly trolleyService: TrolleyService) { }
 
   @Get('user')
-  getUser(): User {
+  getUser(): User { 
     return this.userService.getUser();
   }
 

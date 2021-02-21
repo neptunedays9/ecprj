@@ -8,7 +8,6 @@ import { ProductPopularity } from '../types/product-popularity';
 import { SortOptions } from '../types/sort-options';
 import { DataService } from '../data/data.service';
 
-
 @Injectable()
 export class SortService {
     constructor(private readonly dataService: DataService) { }
@@ -50,11 +49,11 @@ export class SortService {
                         );
 
                     default:
-                        throw new AppError(ErrorType.AppError_InvalidInput, HttpStatus.BAD_REQUEST);
+                        throw new AppError(ErrorType.AppError_InvalidInput);
                 }
             }),
             catchError(() => {
-                throw new AppError(ErrorType.AppError_InvalidInput, HttpStatus.BAD_REQUEST);
+                throw new AppError(ErrorType.AppError_InvalidInput);
             }));
     }
 
@@ -64,34 +63,35 @@ export class SortService {
 
         return this.dataService.getShopperHistory().pipe(
             map(history => {
-                let popularityArray: ProductPopularity[] = [];
-                allProducts.forEach(prod => Array.prototype.push.apply(popularityArray,
-                    [{
+
+                //initialise popularity array from the products array 
+                let popularityArray: ProductPopularity[] = 
+                allProducts.map(prod => {
+                    return {
                         ...prod,
                         customers: []
-                    }])
-                )
-
-                history.forEach(hElem => {
-                    hElem.products.forEach(p => {
-                        const index = popularityArray.findIndex(i => i.name === p.name);
-                        if (index == -1) {
-                            throw new AppError(ErrorType.AppError_ApiResource, HttpStatus.SERVICE_UNAVAILABLE);
-                        } else {
-                            if (!popularityArray[index].customers.includes(hElem.customerId)) {
-                                Array.prototype.push.apply(popularityArray[index].customers, [hElem.customerId]);
+                }});
+        
+                //populate the unique customerIds in the popularityArray
+                popularityArray.map(pElem => {                    
+                    history.map(hElem => { 
+                        if(hElem.products.findIndex(i => i.name === pElem.name) !== -1) {
+                            if (pElem.customers.findIndex(i => i === hElem.customerId) === -1) {
+                                Array.prototype.push.apply(pElem.customers, [hElem.customerId]);
                             }
                         }
                     })
-                })
+                });
 
-                popularityArray.sort((a, b) => b.customers.length - a.customers.length)
-                popularityArray.forEach(i => delete i.customers);
+                //sort based on the number of customerIds purchased that product
+                popularityArray
+                    .sort((a, b) => b.customers.length - a.customers.length)
+                    .map(i => delete i.customers);
 
                 return popularityArray;
             }),
             catchError(() => {
-                throw new AppError(ErrorType.AppError_InvalidInput, HttpStatus.BAD_REQUEST);
+                throw new AppError(ErrorType.AppError_InvalidInput);
             })
         );
     }
